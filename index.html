@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>การวัดตำแหน่งที่ของข้อมูล | ห้องเรียน ม.6</title>
+<style>
+:root{--ink:#182f58;--blue:#2477dc;--gold:#ffc928;--gold2:#ffdf72;--bg:#fffdf7;--muted:#71809a;--line:#e9edf4;--green:#51a765;--purple:#8c56cf;--pink:#df5267}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#fffdf5,#f8fbff);font-family:"Leelawadee UI",Tahoma,"Noto Sans Thai",sans-serif;color:var(--ink);font-size:14px}button,input{font:inherit}button{cursor:pointer;border:0}
+.app{display:grid;grid-template-columns:220px minmax(0,1fr) 280px;gap:18px;max-width:1600px;margin:auto;padding:18px;min-height:100vh}
+.sidebar{padding:12px 4px;display:flex;flex-direction:column;gap:10px}.brand{display:flex;align-items:center;gap:10px;padding:4px 12px 22px;font-size:21px;font-weight:900;line-height:1.1}.brandmark{font-size:30px;color:#f4b900}.brand small{display:block;font-size:11px;color:var(--muted);font-weight:500;margin-top:7px}.nav{display:flex;flex-direction:column;gap:7px}.nav button{background:transparent;text-align:left;padding:13px 14px;border-radius:15px;color:#435573;font-weight:700;display:flex;align-items:center;gap:12px}.nav button .ico{font-size:21px;width:25px;text-align:center}.nav button.active{background:linear-gradient(110deg,#ffcf36,#ffe37a);color:#162d52;box-shadow:0 5px 14px #f4c52c24}.quote{margin-top:30px;border:1px solid #ffdc6c;border-radius:20px;background:linear-gradient(145deg,#fff9df,#ffedaa);padding:20px 15px;font-size:17px;font-weight:800;line-height:1.7;position:relative;overflow:hidden}.quote:after{content:"🌻";display:block;font-size:45px;margin-top:8px}
+main{min-width:0}.topbar{height:58px;display:flex;align-items:center;gap:12px;margin-bottom:12px}.search{flex:1;border:1px solid #f1f0e9;border-radius:30px;background:#fff;padding:13px 18px;color:#697891;box-shadow:0 5px 18px #203c5b08}.profile{white-space:nowrap;font-weight:800}.profile span{font-size:25px;vertical-align:middle;margin-right:7px}
+.hero{border-radius:22px;background:linear-gradient(110deg,#ffcf3b,#ffe88d);padding:20px 24px;min-height:168px;display:flex;align-items:center;justify-content:space-between;gap:12px;overflow:hidden;position:relative;box-shadow:0 8px 22px #f2c84a21}.hero:after{content:"🌻";font-size:90px;opacity:.55;position:absolute;right:22px;bottom:-20px}.heroText{position:relative;z-index:1;max-width:78%}.tag{display:inline-block;background:#2e7de0;color:white;border-radius:9px;padding:5px 12px;font-weight:800;margin-bottom:8px}.hero h1{font-size:clamp(21px,2.2vw,31px);margin:0 0 7px;line-height:1.35}.hero p{margin:0 0 10px;font-weight:600}.objective{background:#fff9e6cc;border-radius:20px;padding:8px 13px;font-size:12px;max-width:610px}
+.card{background:#fff;border:1px solid #edf0f4;border-radius:20px;padding:15px;margin-top:14px;box-shadow:0 8px 22px #243b5c06}.sectionTitle{font-size:17px;font-weight:900;margin:0 0 12px;display:flex;align-items:center;gap:10px}.sectionTitle .emoji{display:inline-grid;place-items:center;background:#fff0b8;width:30px;height:30px;border-radius:50%}
+.controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.control{padding:13px;border:1px solid #f0e8e4;border-radius:16px;background:#fffdfb;min-width:0}.control:nth-child(2){background:#fbfffc;border-color:#dcefe3}.control:nth-child(3){background:#fcfaff;border-color:#e9defa}.controlHead{display:flex;align-items:flex-start;gap:8px;font-weight:800;line-height:1.4}.number{flex:0 0 31px;width:31px;height:31px;border-radius:50%;display:grid;place-items:center;background:var(--pink);color:#fff;font-size:17px}.control:nth-child(2) .number{background:var(--green)}.control:nth-child(3) .number{background:var(--purple)}.rangeLine{display:flex;align-items:center;gap:9px;margin-top:13px}.rangeLine input{width:100%;min-width:0;accent-color:#f8bc00}.valueBox{width:48px;text-align:center;border:1px solid #e5e5ee;background:white;border-radius:8px;padding:5px;font-weight:900}.rangeMeta{font-size:11px;color:var(--muted);margin-top:4px}
+.dataGrid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(190px,.7fr);gap:12px}.chartTitle{font-size:15px;font-weight:900;margin:0 0 5px}.chartBox{border:1px solid #edf0f5;border-radius:15px;padding:12px 10px 6px;min-width:0}.chartBox svg{display:block;width:100%;height:auto}.stats{border:1px solid #edf0f5;border-radius:15px;padding:12px}.stats h3{margin:0 0 10px;background:#f7f7ff;padding:7px;border-radius:9px;font-size:15px}.statrow{display:flex;justify-content:space-between;gap:8px;padding:7px 4px;border-bottom:1px solid #f0f1f5}.statrow b{font-variant-numeric:tabular-nums}.scorebox{background:#f7f0ff;border-radius:10px;padding:10px;margin-top:12px}.scorebox strong{font-size:21px;color:var(--purple)}
+.boxplot{margin-top:12px;border:1px solid #edf0f5;border-radius:15px;padding:10px 14px}.boxplot svg{width:100%;height:auto;display:block}
+.insights{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;background:#fff9e8;border:1px solid #ffedb6;border-radius:15px;padding:12px;margin-top:12px}.insight{display:flex;gap:8px;padding:3px 7px;font-size:12px;line-height:1.5}.insight+.insight{border-left:1px solid #f7dfa0}.insight .bubble{font-size:19px}
+.right{display:flex;flex-direction:column;gap:14px;padding-top:70px}.right .card{margin:0;padding:16px}.summaryItem{display:flex;align-items:center;gap:9px;border-radius:12px;padding:11px;margin:8px 0;font-weight:800}.summaryItem .badgeNum{display:grid;place-items:center;color:white;border-radius:50%;width:27px;height:27px;font-size:15px}.s1{background:#fff0f0}.s2{background:#eff9f0}.s3{background:#f4efff}.s1 .badgeNum{background:var(--pink)}.s2 .badgeNum{background:var(--green)}.s3 .badgeNum{background:var(--purple)}.summaryItem strong{margin-left:auto;font-size:18px}.percentBox{margin-top:12px;border:1px solid #ffdc71;background:#fffaf0;border-radius:13px;padding:13px}.percentBox strong{float:right;font-size:21px}.percentBox p{font-size:12px;line-height:1.6;margin-bottom:0}.quizCard{background:linear-gradient(145deg,#fff9df,#fff1bd)!important;border-color:#ffdb68!important}.quizCard p{line-height:1.6}.cta{width:100%;border-radius:13px;padding:13px;background:linear-gradient(100deg,#ffc51f,#ffda45);font-weight:900;color:#182f58;font-size:15px}.progress{height:10px;background:#f1ead7;border-radius:20px;overflow:hidden;margin:10px 0}.progress span{display:block;height:100%;width:0;background:#ffc51f;border-radius:20px;transition:width .3s}.motivation{background:linear-gradient(140deg,#fff7d6,#fffdf4);border-radius:20px;padding:18px;font-size:15px;font-weight:800;line-height:1.7;text-align:center;border:1px solid #fff0b9}.motivation span{font-size:38px;display:block}
+.quizArea{display:none}.quizArea.show{display:block}.question{border:1px solid #e8edf4;border-radius:13px;padding:12px;margin:10px 0}.question p{font-weight:800;margin:0 0 8px}.question label{display:block;margin:7px 0;font-size:13px}.answer{display:none;background:#eefaf2;border-radius:9px;padding:9px;margin-top:8px}.feedback{font-weight:900;margin-top:10px}.small{font-size:11px;color:var(--muted)}.hide{display:none!important}
+@media(max-width:1120px){.app{grid-template-columns:175px minmax(0,1fr);}.right{grid-column:2;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding-top:0}.right .motivation{grid-column:span 2}.brand{font-size:18px}.controls{grid-template-columns:1fr}.dataGrid{grid-template-columns:1fr}}
+@media(max-width:680px){.app{display:block;padding:10px}.sidebar{padding:4px 0}.brand{padding-bottom:8px}.nav{display:grid;grid-template-columns:repeat(3,1fr)}.nav button{font-size:11px;padding:9px 6px;display:block;text-align:center}.nav button .ico{display:block;width:auto;margin-bottom:3px}.quote{display:none}.topbar{height:auto}.search{font-size:11px;padding:10px}.profile{font-size:11px}.hero{padding:16px}.heroText{max-width:100%}.hero:after{opacity:.15}.hero h1{font-size:22px}.controls{grid-template-columns:1fr}.dataGrid{grid-template-columns:1fr}.insights{grid-template-columns:1fr}.insight+.insight{border-left:0;border-top:1px solid #f7dfa0;padding-top:10px}.right{display:flex;margin-top:14px}.right .motivation{grid-column:auto}}
+
+.handPanel{border:1px solid #dce8f7;background:linear-gradient(135deg,#f5faff,#fff);border-radius:18px;padding:15px;margin-top:14px}
+.handHead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.handHead .sectionTitle{margin:0}
+.cameraStatus{font-size:12px;background:#eef3f9;color:#52647d;padding:7px 10px;border-radius:20px;font-weight:800}
+.cameraGrid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(190px,.8fr);gap:14px;margin-top:13px}
+.cameraStage{position:relative;background:#17243a;border-radius:14px;overflow:hidden;min-height:200px;display:grid;place-items:center}
+.cameraStage video,.cameraStage canvas{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;transform:scaleX(-1)}
+.cameraStage canvas{pointer-events:none}
+.cameraPlaceholder{color:#e7edf7;text-align:center;padding:25px;z-index:1;line-height:1.8}
+.cameraPlaceholder .camIcon{font-size:42px;display:block}
+.cameraControls{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.cameraControls button{border-radius:10px;padding:10px 13px;font-weight:800}
+.cameraStart{background:#2477dc;color:white}.cameraStop{background:#eaf0f7;color:#33445d}
+.handInstructions{background:#fff;border:1px solid #e7edf5;border-radius:14px;padding:13px}
+.handInstructions h3{font-size:14px;margin:0 0 9px}
+.handInstructions p{font-size:12px;line-height:1.7;margin:7px 0}
+.handInstructions select{width:100%;padding:10px;border:1px solid #dce4ef;border-radius:9px;background:#fff;color:#182f58;margin:5px 0 8px}
+.handReadout{margin-top:9px;padding:10px;border-radius:10px;background:#f2f7ff;font-size:12px;line-height:1.6}
+.handReadout strong{color:#2477dc}
+@media(max-width:680px){.cameraGrid{grid-template-columns:1fr}.cameraStage{min-height:230px}}
+
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><span class="brandmark">▥</span><div>การวัดตำแหน่งที่<br>ของข้อมูล <small>เลื่อน • สังเกต • คิด • วิเคราะห์</small></div></div>
+  <nav class="nav">
+    <button class="active" data-nav="home"><span class="ico">⌂</span>หน้าหลัก</button>
+    <button data-nav="learn"><span class="ico">◧</span>เรียนรู้</button>
+    <button data-nav="controls"><span class="ico">⚙</span>ทดลองปรับค่า</button>
+    <button data-nav="handControl"><span class="ico">🖐</span>ควบคุมด้วยมือ</button>
+    <button data-nav="chart"><span class="ico">▥</span>กราฟและข้อมูล</button>
+    <button data-nav="quiz"><span class="ico">☑</span>แบบทดสอบ</button>
+    <button data-nav="summary"><span class="ico">▤</span>สรุปผลการเรียนรู้</button>
+  </nav>
+  <div class="quote">ทุกการเรียนรู้<br>คือก้าวเล็ก ๆ<br>สู่ความสำเร็จ<br>ในอนาคต</div>
+</aside>
+
+<main>
+  <div class="topbar"><div class="search">🔍　“ข้อมูลชุดเดียวกัน... แต่ตำแหน่งที่ต่างกัน สื่อความหมายต่างกันได้”</div><div class="profile"><span>👩🏻‍🎓</span>สวัสดี<br>นักเรียน ม.6</div></div>
+  <section class="hero" id="home">
+    <div class="heroText"><span class="tag">บทเรียนเชิงโต้ตอบ</span><h1>การวัดตำแหน่งที่ของข้อมูล</h1><p>สำหรับนักเรียนชั้น ม.6　|　วิชาคณิตศาสตร์</p><div class="objective">🎯 <b>วัตถุประสงค์:</b> นักเรียนสามารถอธิบายความหมาย คำนวณ และแปลผลของการวัดตำแหน่งที่ของข้อมูล</div></div>
+  </section>
+
+  <section class="card" id="controls">
+    <h2 class="sectionTitle"><span class="emoji">🎛️</span>ปรับตัวแปรเพื่อศึกษา</h2>
+    <div class="controls">
+      <div class="control"><div class="controlHead"><span class="number">1</span><div>ค่ากลางของข้อมูล<br><span class="small">(20 – 80)</span></div></div><div class="rangeLine"><input id="center" type="range" min="20" max="80" value="50"><output id="centerVal" class="valueBox">50</output></div><div class="rangeMeta">เลื่อนเพื่อดูตำแหน่งควอร์ไทล์เปลี่ยนตาม</div></div>
+      <div class="control"><div class="controlHead"><span class="number">2</span><div>การกระจายของข้อมูล<br><span class="small">(5 – 30)</span></div></div><div class="rangeLine"><input id="spread" type="range" min="5" max="30" value="15"><output id="spreadVal" class="valueBox">15</output></div><div class="rangeMeta">ค่ายิ่งมาก ช่วง Q₁ ถึง Q₃ ยิ่งกว้าง</div></div>
+      <div class="control"><div class="controlHead"><span class="number">3</span><div>คะแนนที่ต้องการวิเคราะห์<br><span class="small">(0 – 100)</span></div></div><div class="rangeLine"><input id="score" type="range" min="0" max="100" value="60"><output id="scoreVal" class="valueBox">60</output></div><div class="rangeMeta">เลือกคะแนนเพื่อดูเปอร์เซ็นไทล์โดยประมาณ</div></div>
+    </div>
+  </section>
+
+
+  <section class="handPanel" id="handControl">
+    <div class="handHead">
+      <h2 class="sectionTitle"><span class="emoji">🖐️</span>ควบคุม DATA POSITION ด้วยมือ (MediaPipe)</h2>
+      <span class="cameraStatus" id="cameraStatus">ยังไม่ได้เปิดกล้อง</span>
+    </div>
+    <div class="cameraGrid">
+      <div>
+        <div class="cameraStage">
+          <video id="handVideo" autoplay playsinline muted></video>
+          <canvas id="handCanvas"></canvas>
+          <div class="cameraPlaceholder" id="cameraPlaceholder"><span class="camIcon">📷</span>กด “เปิดกล้อง” เพื่อเริ่มตรวจจับมือ<br><span class="small" style="color:#c9d5e6">ระบบจะใช้ภาพจากกล้องเพื่อควบคุม Slider</span></div>
+        </div>
+        <div class="cameraControls">
+          <button class="cameraStart" id="startCamera">📷 เปิดกล้องและเริ่มควบคุม</button>
+          <button class="cameraStop" id="stopCamera" disabled>ปิดกล้อง</button>
+        </div>
+      </div>
+      <div class="handInstructions">
+        <h3>วิธีควบคุมด้วยท่าทางมือ</h3>
+        <label for="handTarget" class="small">เลือกตัวแปรที่ต้องการปรับ</label>
+        <select id="handTarget">
+          <option value="center">ค่ากลางของข้อมูล (20–80)</option>
+          <option value="spread">การกระจายของข้อมูล (5–30)</option>
+          <option value="score">คะแนนที่ต้องการวิเคราะห์ (0–100)</option>
+        </select>
+        <p>1. อยู่ในระยะที่กล้องมองเห็นมือชัดเจน</p>
+        <p>2. กางมือเพื่อให้ระบบตรวจจับตำแหน่งนิ้วชี้</p>
+        <p>3. จีบนิ้วโป้งกับนิ้วชี้ค้างไว้ แล้วเลื่อนมือซ้าย–ขวาเพื่อปรับค่าที่เลือก</p>
+        <p>4. คลายจีบนิ้วเพื่อหยุดปรับค่า</p>
+        <div class="handReadout" id="handReadout">สถานะ: <strong>รอเปิดกล้อง</strong><br>ค่าที่ควบคุมจะแสดงที่นี่</div>
+        <p class="small">การประมวลผลต้องโหลดไลบรารี MediaPipe จากอินเทอร์เน็ต และเบราว์เซอร์ต้องได้รับอนุญาตใช้กล้อง</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="chart">
+    <h2 class="sectionTitle"><span class="emoji">🔔</span>การแจกแจงของข้อมูล <span class="small">(แบบจำลองการแจกแจงปกติ)</span></h2>
+    <div class="dataGrid">
+      <div class="chartBox"><div class="chartTitle">กราฟแสดงตำแหน่ง Q₁, Q₂ และ Q₃</div><svg id="curve" viewBox="0 0 600 260" role="img" aria-label="กราฟการแจกแจง"></svg><div class="small">แกนนอนแสดงคะแนน 0–100 • ความสูงของเส้นโค้งแสดงรูปแบบการกระจาย</div></div>
+      <div class="stats"><h3>📊 ค่าทางสถิติ</h3><div class="statrow"><span>Q₁ (25%)</span><b id="q1">40</b></div><div class="statrow"><span>Q₂ (50%)</span><b id="q2">50</b></div><div class="statrow"><span>Q₃ (75%)</span><b id="q3">60</b></div><div class="statrow"><span>IQR (Q₃ − Q₁)</span><b id="iqr">20</b></div><div class="scorebox">📍 คะแนนที่เลือก <b id="scoreSummary">60</b><br><span class="small">เปอร์เซ็นไทล์โดยประมาณ</span><br><strong id="pct">75%</strong><p id="meaning">คะแนนอยู่ในตำแหน่งค่อนข้างสูงเมื่อเทียบกับข้อมูลทั้งหมด</p></div></div>
+    </div>
+    <div class="boxplot"><div class="chartTitle">▰ แผนภาพกล่อง (Box Plot)</div><svg id="boxplot" viewBox="0 0 800 95" role="img" aria-label="แผนภาพกล่อง"></svg></div>
+    <div class="insights">
+      <div class="insight"><span class="bubble">🟡</span><div><b>เมื่อค่ากลางเปลี่ยน</b><br>ตำแหน่ง Q₁, Q₂ และ Q₃ จะเปลี่ยนตามไปด้วย</div></div>
+      <div class="insight"><span class="bubble">🟢</span><div><b>เมื่อข้อมูลกระจายมากขึ้น</b><br>ระยะห่างระหว่าง Q₁ และ Q₃ จะมากขึ้น</div></div>
+      <div class="insight"><span class="bubble">🟣</span><div><b>คะแนนที่เลือก</b><br>ใช้เปอร์เซ็นไทล์อธิบายตำแหน่งเมื่อเทียบกับข้อมูล</div></div>
+    </div>
+  </section>
+
+  <section class="card" id="learn"><h2 class="sectionTitle"><span class="emoji">💡</span>สรุปความหมาย</h2>
+    <p><b>Q₁ (ควอร์ไทล์ที่ 1)</b> เป็นตำแหน่งที่มีข้อมูลประมาณ 25% อยู่ที่หรือต่ำกว่าค่านี้</p>
+    <p><b>Q₂ (ควอร์ไทล์ที่ 2)</b> คือมัธยฐาน แบ่งข้อมูลเป็นสองส่วนประมาณ 50% ต่อ 50%</p>
+    <p><b>Q₃ (ควอร์ไทล์ที่ 3)</b> เป็นตำแหน่งที่มีข้อมูลประมาณ 75% อยู่ที่หรือต่ำกว่าค่านี้</p>
+    <p><b>IQR = Q₃ − Q₁</b> แสดงการกระจายของข้อมูล 50% ตรงกลาง</p>
+    <p class="small">หมายเหตุ: ค่าที่แสดงคำนวณจากแบบจำลองปกติเพื่อช่วยสร้างความเข้าใจ จึงเป็นค่าประมาณ ไม่ใช่การคำนวณจากชุดข้อมูลจริงทุกชุด</p>
+  </section>
+
+  <section class="card quizArea" id="quiz">
+    <h2 class="sectionTitle"><span class="emoji">📝</span>แบบทดสอบท้ายกิจกรรม</h2>
+    <p>ตอบคำถามทั้ง 3 ข้อ แล้วกดตรวจคำตอบเพื่อดูคะแนนและเฉลย</p>
+    <div class="question"><p>ข้อ 1. ถ้าค่ากลางเพิ่มจาก 50 เป็น 70 โดยการกระจายเท่าเดิม จะเกิดอะไรขึ้น?</p><label><input type="radio" name="q1" value="a"> Q₁, Q₂ และ Q₃ เลื่อนไปทางคะแนนสูงขึ้น</label><label><input type="radio" name="q1" value="b"> Q₁, Q₂ และ Q₃ ไม่เปลี่ยน</label><label><input type="radio" name="q1" value="c"> IQR ต้องเป็นศูนย์</label><div class="answer" id="a1"><b>เฉลย: A.</b> เมื่อค่ากลางเพิ่ม ควอร์ไทล์ทั้งสามเลื่อนไปทางคะแนนสูงขึ้นในแบบจำลองนี้</div></div>
+    <div class="question"><p>ข้อ 2. เมื่อเพิ่มการกระจาย แต่ค่ากลางคงเดิม ข้อใดถูกต้อง?</p><label><input type="radio" name="q2" value="a"> Q₁ และ Q₃ เข้าใกล้ Q₂ มากขึ้น</label><label><input type="radio" name="q2" value="b"> ระยะ Q₃ − Q₁ กว้างขึ้น</label><label><input type="radio" name="q2" value="c"> Q₂ เปลี่ยนเป็น 100 เสมอ</label><div class="answer" id="a2"><b>เฉลย: B.</b> การกระจายมากขึ้นทำให้ Q₁ และ Q₃ ห่างกันมากขึ้น</div></div>
+    <div class="question"><p>ข้อ 3. คะแนนที่อยู่ในเปอร์เซ็นไทล์ประมาณ 75 หมายถึงอะไร?</p><label><input type="radio" name="q3" value="a"> คะแนนนั้นต้องเท่ากับ 75 คะแนน</label><label><input type="radio" name="q3" value="b"> มีข้อมูลประมาณ 75% ที่มีค่าไม่เกินคะแนนนั้น</label><label><input type="radio" name="q3" value="c"> คะแนนนั้นเป็นคะแนนต่ำสุด</label><div class="answer" id="a3"><b>เฉลย: B.</b> เปอร์เซ็นไทล์ 75 หมายถึงข้อมูลประมาณ 75% อยู่ที่หรือต่ำกว่าคะแนนนั้น ไม่ได้หมายความว่าคะแนนต้องเป็น 75</div></div>
+    <button class="cta" id="checkQuiz">ตรวจคำตอบ</button><div class="feedback" id="quizResult"></div>
+  </section>
+  <section class="card hide" id="summary"><h2 class="sectionTitle"><span class="emoji">🏆</span>สรุปผลการเรียนรู้</h2><p id="summaryText">ลองปรับตัวแปรและทำแบบทดสอบเพื่อสรุปสิ่งที่ค้นพบ</p><button class="cta" id="goQuiz">ไปทำแบบทดสอบ</button></section>
+</main>
+
+<aside class="right">
+  <section class="card"><h2 class="sectionTitle"><span class="emoji">📋</span>สรุปค่าที่เลือกในขณะนี้</h2>
+    <div class="summaryItem s1"><span class="badgeNum">1</span><span>ค่ากลางของข้อมูล</span><strong id="sideCenter">50</strong></div>
+    <div class="summaryItem s2"><span class="badgeNum">2</span><span>การกระจายของข้อมูล</span><strong id="sideSpread">15</strong></div>
+    <div class="summaryItem s3"><span class="badgeNum">3</span><span>คะแนนที่เลือก</span><strong id="sideScore">60</strong></div>
+    <div class="percentBox">⭐ เปอร์เซ็นไทล์โดยประมาณ <strong id="sidePct">75%</strong><p id="sideMeaning">คะแนนอยู่ในตำแหน่งค่อนข้างสูง เมื่อเทียบกับข้อมูลทั้งหมด</p></div>
+  </section>
+  <section class="card quizCard"><h2 class="sectionTitle"><span class="emoji">📝</span>แบบทดสอบท้ายกิจกรรม</h2><p>ตอบคำถาม 3 ข้อ เพื่อวัดความเข้าใจ พร้อมเฉลยและคำอธิบาย</p><button class="cta" id="startQuiz">เริ่มทำแบบทดสอบ　➜</button></section>
+  <section class="card"><h2 class="sectionTitle"><span class="emoji">📈</span>สถิติการเรียนรู้</h2><div>ความคืบหน้ากิจกรรม</div><div class="progress"><span id="progressBar"></span></div><b id="progressText">0%</b><p class="small">ปรับตัวแปรเพื่อสำรวจ และทำแบบทดสอบเพื่อทบทวนความเข้าใจ</p></section>
+  <div class="motivation"><span>🌻</span>“เก่งขึ้นได้อีก แค่ลองปรับอีกนิด แล้วคุณจะเห็นความต่างเองค่ะ” 💛</div>
+</aside>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const center=$('center'),spread=$('spread'),score=$('score');
+let touched=new Set(),quizDone=false;
+const z75=.67448975;
+function cdf(z){const sign=z<0?-1:1;z=Math.abs(z);const t=1/(1+.2316419*z),d=.3989423*Math.exp(-z*z/2);const p=1-d*t*(.3193815+t*(-.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));return Math.max(0,Math.min(1,sign===1?p:1-p))}
+function f(n){return n.toFixed(1)}
+function makeCurve(mu,sd,x,q1,q2,q3){
+ const W=600,H=260,L=30,R=12,T=24,B=35,pw=W-L-R,ph=H-T-B,px=v=>L+v/100*pw,py=d=>T+ph-d/(1/(sd*Math.sqrt(2*Math.PI)))*ph*.78;
+ let grid='',path='';for(let v=0;v<=100;v+=10){grid+=`<line x1="${px(v)}" y1="${T}" x2="${px(v)}" y2="${T+ph}" stroke="#e8eef6"/><text x="${px(v)}" y="${H-14}" text-anchor="middle" font-size="11" fill="#63728a">${v}</text>`}
+ for(let v=0;v<=100;v+=.5){const d=Math.exp(-.5*((v-mu)/sd)**2)/(sd*Math.sqrt(2*Math.PI));path+=(v===0?'M':'L')+px(v).toFixed(2)+','+py(d).toFixed(2)+' '}
+ let lines='';[[q1,'Q₁','#2878dc',0],[q2,'Q₂','#f07b20',1],[q3,'Q₃','#51a765',2],[x,'คะแนน','#d94f75',3]].forEach(([v,label,c,i])=>{let cl=Math.max(0,Math.min(100,v));lines+=`<line x1="${px(cl)}" y1="${T+12}" x2="${px(cl)}" y2="${T+ph}" stroke="${c}" stroke-width="${label==='คะแนน'?2.5:2}" stroke-dasharray="${label==='คะแนน'?'4 4':'7 4'}"/><text x="${px(cl)}" y="${T+(i===0?11:i===1?24:i===2?11:39)}" text-anchor="middle" font-size="12" font-weight="bold" fill="${c}">${label} ${label==='คะแนน'?'':Math.round(v)}</text>`});
+ const area=path+`L${px(100)},${T+ph} L${px(0)},${T+ph} Z`;
+ $('curve').innerHTML=`<defs><linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4a94ed" stop-opacity=".35"/><stop offset="100%" stop-color="#4a94ed" stop-opacity=".03"/></linearGradient></defs>${grid}<path d="${area}" fill="url(#area)"/><path d="${path}" fill="none" stroke="#2477dc" stroke-width="3" stroke-linejoin="round"/>${lines}<line x1="${L}" y1="${T+ph}" x2="${W-R}" y2="${T+ph}" stroke="#66768c"/>`;
+}
+function makeBox(mu,sd,q1,q2,q3){
+ const W=800,L=30,R=28,pw=W-L-R,px=v=>L+v/100*pw,min=Math.max(0,mu-2.5*sd),max=Math.min(100,mu+2.5*sd);
+ $('boxplot').innerHTML=`<line x1="${px(min)}" y1="38" x2="${px(max)}" y2="38" stroke="#2477dc" stroke-width="2.5"/><line x1="${px(min)}" y1="27" x2="${px(min)}" y2="49" stroke="#2477dc" stroke-width="2.5"/><line x1="${px(max)}" y1="27" x2="${px(max)}" y2="49" stroke="#2477dc" stroke-width="2.5"/><rect x="${px(Math.max(0,q1))}" y="24" width="${Math.max(2,px(Math.min(100,q3))-px(Math.max(0,q1)))}" height="28" fill="#b8d2ff" stroke="#2477dc" stroke-width="2"/><line x1="${px(q2)}" y1="24" x2="${px(q2)}" y2="52" stroke="#ed8b28" stroke-width="3"/><text x="${px(min)}" y="68" text-anchor="middle" font-size="11" fill="#182f58">Min ${Math.round(min)}</text><text x="${px(q1)}" y="82" text-anchor="middle" font-size="11" fill="#2477dc">Q₁ ${Math.round(q1)}</text><text x="${px(q2)}" y="68" text-anchor="middle" font-size="11" fill="#ed8b28">Q₂ ${Math.round(q2)}</text><text x="${px(q3)}" y="82" text-anchor="middle" font-size="11" fill="#51a765">Q₃ ${Math.round(q3)}</text><text x="${px(max)}" y="68" text-anchor="middle" font-size="11" fill="#182f58">Max ${Math.round(max)}</text>`;
+}
+function update(){
+ const mu=+center.value,sd=+spread.value,x=+score.value,q1=mu-z75*sd,q2=mu,q3=mu+z75*sd,iqr=q3-q1,pct=Math.round(cdf((x-mu)/sd)*100);
+ $('centerVal').textContent=mu;$('spreadVal').textContent=sd;$('scoreVal').textContent=x;
+ $('q1').textContent=f(q1);$('q2').textContent=f(q2);$('q3').textContent=f(q3);$('iqr').textContent=f(iqr);$('pct').textContent=pct+'%';$('scoreSummary').textContent=x;
+ $('sideCenter').textContent=mu;$('sideSpread').textContent=sd;$('sideScore').textContent=x;$('sidePct').textContent=pct+'%';
+ let pos=x<q1?'ต่ำกว่า Q₁':x<q2?'อยู่ระหว่าง Q₁ กับ Q₂':x<q3?'อยู่ระหว่าง Q₂ กับ Q₃':'อยู่ที่หรือสูงกว่า Q₃';
+ let msg=`คะแนน ${x} ${pos} และมีตำแหน่งเปอร์เซ็นไทล์โดยประมาณ ${pct}%`;
+ $('meaning').textContent=msg;$('sideMeaning').textContent=msg;
+ makeCurve(mu,sd,x,q1,q2,q3);makeBox(mu,sd,q1,q2,q3);
+ touched.add('controls');$('progressBar').style.width=Math.min(90,touched.size*15+(quizDone?25:0))+'%';$('progressText').textContent=Math.min(90,touched.size*15+(quizDone?25:0))+'%';
+}
+[center,spread,score].forEach(el=>el.addEventListener('input',()=>{touched.add(el.id);update()}));
+function showQuiz(){ $('quiz').classList.add('show');$('quiz').scrollIntoView({behavior:'smooth',block:'start'});touched.add('quiz'); }
+$('startQuiz').onclick=showQuiz;$('goQuiz').onclick=showQuiz;
+$('checkQuiz').onclick=()=>{const key={q1:'a',q2:'b',q3:'b'};let points=0,answered=0;for(let i=1;i<=3;i++){let choice=document.querySelector(`input[name="q${i}"]:checked`);$('a'+i).style.display='block';if(choice){answered++;if(choice.value===key['q'+i])points++}}$('quizResult').textContent=`คะแนนของคุณ ${points}/3 (ตอบแล้ว ${answered}/3 ข้อ)`;quizDone=true;$('progressBar').style.width='100%';$('progressText').textContent='100%';$('summaryText').textContent=`ทำแบบทดสอบแล้ว ได้ ${points} จาก 3 คะแนน อย่าลืมทบทวนว่า Q₁, Q₂, Q₃ แบ่งข้อมูลเป็นตำแหน่งอย่างไร และ IQR บอกการกระจายของข้อมูล 50% ตรงกลาง`;};
+document.querySelectorAll('[data-nav]').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('[data-nav]').forEach(b=>b.classList.remove('active'));btn.classList.add('active');let id=btn.dataset.nav; if(id==='quiz')showQuiz();else if(id==='summary'){$('summary').classList.remove('hide');$('summary').scrollIntoView({behavior:'smooth'})}else{const target=$(id);if(target)target.scrollIntoView({behavior:'smooth',block:'start'});}});
+update();
+</script>
+
+<script type="module">
+import { FilesetResolver, HandLandmarker } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/+esm";
+
+const video = document.getElementById("handVideo");
+const canvas = document.getElementById("handCanvas");
+const ctx = canvas.getContext("2d");
+const placeholder = document.getElementById("cameraPlaceholder");
+const status = document.getElementById("cameraStatus");
+const readout = document.getElementById("handReadout");
+const startBtn = document.getElementById("startCamera");
+const stopBtn = document.getElementById("stopCamera");
+const targetSelect = document.getElementById("handTarget");
+const sliders = {
+  center: { el: document.getElementById("center"), min: 20, max: 80, label: "ค่ากลางของข้อมูล" },
+  spread: { el: document.getElementById("spread"), min: 5, max: 30, label: "การกระจายของข้อมูล" },
+  score: { el: document.getElementById("score"), min: 0, max: 100, label: "คะแนนที่ต้องการวิเคราะห์" }
+};
+let handLandmarker = null, stream = null, rafId = null, lastVideoTime = -1;
+let pinchActive = false, smoothX = null, lastUpdate = 0;
+
+function setStatus(text, active=false) {
+  status.textContent = text;
+  status.style.background = active ? "#e8f7eb" : "#eef3f9";
+  status.style.color = active ? "#24743b" : "#52647d";
+}
+function resizeCanvas() {
+  const w = video.videoWidth || 640, h = video.videoHeight || 480;
+  if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+}
+function distance(a,b) { return Math.hypot(a.x-b.x, a.y-b.y); }
+
+async function startCamera() {
+  startBtn.disabled = true;
+  setStatus("กำลังเตรียม MediaPipe…");
+  readout.innerHTML = 'สถานะ: <strong>กำลังโหลดระบบตรวจจับมือ…</strong>';
+  try {
+    const vision = await FilesetResolver.forVisionTasks("https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm");
+    handLandmarker = await HandLandmarker.createFromOptions(vision, {
+      baseOptions: {
+        modelAssetPath: "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
+        delegate: "GPU"
+      },
+      runningMode: "VIDEO",
+      numHands: 1
+    });
+    stream = await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } }
+    });
+    video.srcObject = stream;
+    await video.play();
+    placeholder.style.display = "none";
+    stopBtn.disabled = false;
+    setStatus("กล้องทำงานแล้ว", true);
+    readout.innerHTML = 'สถานะ: <strong>ตรวจจับมือแล้วหรือรอมือเข้ากล้อง</strong><br>จีบนิ้วโป้ง–นิ้วชี้ค้างไว้ แล้วเลื่อนมือซ้าย–ขวา';
+    predictLoop();
+  } catch (err) {
+    console.error(err);
+    setStatus("เปิดกล้องไม่สำเร็จ");
+    readout.innerHTML = 'สถานะ: <strong>เปิดกล้องไม่ได้</strong><br>ตรวจสอบการอนุญาตใช้กล้อง และเปิดไฟล์ผ่าน HTTPS หรือ localhost จากนั้นลองใหม่';
+    startBtn.disabled = false;
+    if (stream) stream.getTracks().forEach(t=>t.stop());
+    stream = null;
+  }
+}
+function stopCamera() {
+  if (rafId) cancelAnimationFrame(rafId);
+  rafId = null;
+  if (stream) stream.getTracks().forEach(t=>t.stop());
+  stream = null;
+  video.srcObject = null;
+  if (handLandmarker) { handLandmarker.close(); handLandmarker = null; }
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  placeholder.style.display = "block";
+  startBtn.disabled = false;
+  stopBtn.disabled = true;
+  pinchActive = false; smoothX = null; lastVideoTime = -1;
+  setStatus("ปิดกล้องแล้ว");
+  readout.innerHTML = 'สถานะ: <strong>ปิดกล้องแล้ว</strong><br>ภาพจากกล้องจะไม่ถูกประมวลผลต่อ';
+}
+function predictLoop() {
+  if (!stream || !handLandmarker) return;
+  if (video.readyState >= 2 && video.currentTime !== lastVideoTime) {
+    lastVideoTime = video.currentTime;
+    resizeCanvas();
+    const result = handLandmarker.detectForVideo(video, performance.now());
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const landmarks = result.landmarks && result.landmarks[0];
+    if (landmarks) {
+      // Draw landmark points on a mirrored preview.
+      ctx.fillStyle = "#ffd33d";
+      for (const p of landmarks) {
+        ctx.beginPath();
+        ctx.arc((1-p.x)*canvas.width, p.y*canvas.height, 4, 0, Math.PI*2);
+        ctx.fill();
+      }
+      const thumb = landmarks[4], index = landmarks[8];
+      const pinchGap = distance(thumb,index);
+      const isPinching = pinchGap < 0.055;
+      // Mirror the x-coordinate so moving the hand right feels like moving the pointer right.
+      const x = 1-index.x;
+      smoothX = smoothX == null ? x : smoothX*0.72 + x*0.28;
+      if (isPinching) {
+        pinchActive = true;
+        const key = targetSelect.value, item = sliders[key];
+        const raw = item.min + Math.max(0,Math.min(1,smoothX))*(item.max-item.min);
+        const value = Math.round(raw);
+        // Throttle updates to keep slider movement stable.
+        const now = performance.now();
+        if (now-lastUpdate > 35 && Number(item.el.value)!==value) {
+          item.el.value = value;
+          item.el.dispatchEvent(new Event("input", {bubbles:true}));
+          lastUpdate = now;
+        }
+        setStatus("กำลังควบคุมด้วยมือ", true);
+        readout.innerHTML = `สถานะ: <strong>กำลังปรับค่า</strong><br>${item.label}: <strong>${value}</strong><br>คลายนิ้วโป้งกับนิ้วชี้เพื่อหยุด`;
+      } else {
+        pinchActive = false;
+        setStatus("ตรวจพบมือแล้ว", true);
+        readout.innerHTML = `สถานะ: <strong>ตรวจพบมือแล้ว</strong><br>ตัวแปรที่เลือก: ${sliders[targetSelect.value].label}<br>จีบนิ้วโป้ง–นิ้วชี้เพื่อเริ่มปรับค่า`;
+      }
+    } else {
+      pinchActive = false;
+      smoothX = null;
+      setStatus("กำลังรอมือเข้ากล้อง");
+      readout.innerHTML = 'สถานะ: <strong>ยังไม่พบมือ</strong><br>ยกมือให้อยู่ในกรอบกล้องและมีแสงเพียงพอ';
+    }
+  }
+  rafId = requestAnimationFrame(predictLoop);
+}
+startBtn.addEventListener("click", startCamera);
+stopBtn.addEventListener("click", stopCamera);
+window.addEventListener("beforeunload", () => {
+  if (stream) stream.getTracks().forEach(t=>t.stop());
+});
+</script>
+
+</body>
+</html>
